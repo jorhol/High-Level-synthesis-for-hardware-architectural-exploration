@@ -3,8 +3,10 @@
 % this package is just to generate text for demo-purposes
 \usepackage{blindtext}
 
+\long\def\/*#1*/{}
+\usepackage{fancyvrb}
 
-\title{High-Level Synthesis for hardware architectural exploration} % The title of your assignement; NB use \newlinetitle to start a newline
+\title{High-Level Synthesis for hardware \\architectural exploration} % The title of your assignement; NB use \newlinetitle to start a newline
 \author{Jørgen Holmefjord} % Your firstname and lastname
 \professor{Kjetil Svarstad, IET} % Affiliation = ITEM for instance
 \supervisor{Isael Diaz, Nordic Semiconductor}
@@ -19,6 +21,7 @@
 \graphicspath{{./figs/}}
 
 \loadglsentries{glossary}
+\glsaddall[]
 \makeglossaries
 
 \begin{document}
@@ -36,8 +39,8 @@
 
 %% There must be an abstract in English, even though the main text is in Norwegian
 \selectlanguage{english}
-\include{abstract_english}
-\cleardoublepage
+%%\include{abstract_english}
+%%\cleardoublepage
 
 %% Only for the master's thesis; if the main text is in English and you can write Norwegian, there must be an abstract in Norwegian as well.
 % \selectlanguage{norsk}
@@ -46,43 +49,52 @@
 
 \selectlanguage{english}% Change to 'norsk' if you are writing in Norwegian
 
-\include{preface}
-\cleardoublepage
+%%\include{preface}
+%%\cleardoublepage
 
 % similarly you may add a separate acknowledgments page
 
 \tableofcontents*
-\cleardoublepage
+\clearpage
+%%\cleardoublepage
 
 %% include if relevant
-\listoffigures
-\cleardoublepage
+%%\listoffigures
+%%\cleardoublepage
 
 %% include if relevant
-\listoftables
-\cleardoublepage
+%%\listoftables
+%%\cleardoublepage
 
 %% include if relevant
-\listofalgorithms
-\addcontentsline{toc}{chapter}{List of Algorithms}
-\cleardoublepage
+%%\listofalgorithms
+%%\addcontentsline{toc}{chapter}{List of Algorithms}
+%%\cleardoublepage
 
 %% include if relevant
-\printglossary[title=List of Symbols, style=long]
-\cleardoublepage
-\glsaddall[]
+%%\printglossary[title=List of Symbols, style=long]
+%%\cleardoublepage
+
 
 %% include if relevant
-\printglossary[title=List of Acronyms,type=\acronymtype] % prints just the list of acronyms
-\cleardoublepage
+\printglossaries%[title=List of Acronyms,type=\acronymtype] % prints just the list of acronyms
+%%\printglossaries
+%%\printglossary[type=\acronymtype]
+%%\clearpage
+%%\cleardoublepage
 
 \pagenumbering{arabic}
 \pagestyle{ruled}
-\include{background}
+%%\include{chapters/01-introduction}
+\include{chapters/02-background}
+%%\include{chapters/03-methodology}
+%%\include{chapters/04-results}
+%%\include{chapters/05-discussion}
+%%\include{chapters/06-conclusion}
 %% include here the other chapters
 
 \renewcommand*{\bibname}{References}
-\bibliographystyle{alpha}
+\bibliographystyle{plain}
 \bibliography{main}
 
 %% Uncomment the following if you have any appendix
