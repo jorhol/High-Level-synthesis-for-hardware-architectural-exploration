@@ -5,6 +5,7 @@
 
 \long\def\/*#1*/{}
 \usepackage{fancyvrb}
+\usepackage[justification=centering]{caption}
 
 \title{High-Level Synthesis for hardware \\architectural exploration} % The title of your assignement; NB use \newlinetitle to start a newline
 \author{Jørgen Holmefjord} % Your firstname and lastname
@@ -21,9 +22,9 @@
 \graphicspath{{./figs/}}
 
 \loadglsentries{glossary}
-\glsaddall[]
-\makeglossaries
-
+%\glsaddall[]
+%\makeglossaries
+\makenoidxglossaries
 \begin{document}
 \selectlanguage{english}
 \pagenumbering{roman}
@@ -77,11 +78,18 @@
 
 
 %% include if relevant
-\printglossaries%[title=List of Acronyms,type=\acronymtype] % prints just the list of acronyms
+
+
+
+
+
+
+%\printglossaries%[title=List of Acronyms,type=\acronymtype] % prints just the list of acronyms
 %%\printglossaries
-%%\printglossary[type=\acronymtype]
+%\printglossary[type=\acronymtype]
 %%\clearpage
 %%\cleardoublepage
+\printnoidxglossaries
 
 \pagenumbering{arabic}
 \pagestyle{ruled}
