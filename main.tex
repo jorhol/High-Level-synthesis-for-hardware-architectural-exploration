@@ -6,6 +6,8 @@
 \long\def\/*#1*/{}
 \usepackage{fancyvrb}
 \usepackage[justification=centering]{caption}
+\usepackage{cleveref}
+%%\usepackage{paralist}
 
 \title{High-Level Synthesis for hardware \\architectural exploration} % The title of your assignement; NB use \newlinetitle to start a newline
 \author{Jørgen Holmefjord} % Your firstname and lastname
@@ -60,11 +62,11 @@
 %%\cleardoublepage
 
 %% include if relevant
-%%\listoffigures
+\listoffigures
 %%\cleardoublepage
 
 %% include if relevant
-%%\listoftables
+\listoftables
 %%\cleardoublepage
 
 %% include if relevant
@@ -90,15 +92,16 @@
 %%\clearpage
 %%\cleardoublepage
 \printnoidxglossaries
-
+\cleardoublepage
 \pagenumbering{arabic}
 \pagestyle{ruled}
-%%\include{chapters/01-introduction}
+\include{chapters/01-introduction}
 \include{chapters/02-background}
-%%\include{chapters/03-methodology}
-%%\include{chapters/04-results}
+\include{chapters/03-methodology}
+\include{chapters/04-results}
 %%\include{chapters/05-discussion}
-%%\include{chapters/06-conclusion}
+\include{chapters/06-future_work}
+%%\include{chapters/07-conclusion}
 %% include here the other chapters
 
 \renewcommand*{\bibname}{References}
@@ -106,14 +109,15 @@
 \bibliography{main}
 
 %% Uncomment the following if you have any appendix
-% \appendix
-% \addtocontents{toc}{%
-%  \protect\vspace{1em}% 
-%  \protect\noindent \bfseries \appendixtocname\protect\par
-%  \protect\vspace{-.5em}%
-% }
-% \renewcommand{\chaptername}{\appendixname}
+ \appendix
+ \addtocontents{toc}{%
+  \protect\vspace{1em}% 
+  \protect\noindent \bfseries \appendixtocname\protect\par
+  \protect\vspace{-.5em}%
+ }
+ \renewcommand{\chaptername}{\appendixname}
 %% include below possible appendices (chapters)
 
+%\include{chapters/08-appendix}
 
 \end{document} 

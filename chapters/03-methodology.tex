@@ -1,2 +1,78 @@
 \chapter{Methodology}
 \label{chp:methodology} 
+
+\section{LegUp setup}
+The developers of LegUp has provided a \gls{vdi}-file for VirtualBox, to let users get started with the tool quickly. The image contains the \gls{os} \textit{Ubuntu 14.04} and comes ready with all the tools needed for running \gls{hls}, including \textit{ModelSim} for simulation and \textit{Altera Quartus II} for synthesis. The tool can also be installed from source code, which will be necessary if the tool shall be incorporated into an existing work-flow or server infrastructure.
+For this thesis, an isolated test-environment were needed and thus, the provided \gls{vdi}-file were appropriate. The image containing \textit{LegUp 4.0} were downloaded from the LegUp web-page and setup in VirtualBox according to the instructions given on the web-page. 
+
+\section{HLS constraints and configuration}
+LegUp use \gls{tcl}-files for setting constraints and configuring the \gls{hls}-flow. This section will look on a set of \gls{tcl}-commands that is relevant when creating \gls{hdl}-code compliant with \gls{asic} synthesis.
+\subsection{Required settings}
+The following commands are required in order for LegUp to generate Verilog suitable for synthesis towards an \gls{asic} implementation:
+\begin{description}
+  \item[VSIM\_NO\_ASSERT] \hfill \\
+      When set to 1, this constrain cause assertions to be disabled in the Verilog output used to debug LegUp. This has to be set to remove synthesis errors caused by triple-equality ($===$) assertions. \hfill \\
+      \textbf{Required setting:} \textit{1}
+  \item[INFERRED\_RAMS] \hfill \\
+      Use Verilog to infer RAMs instead of instantiating an Altera altsyncram module. Inferred RAMs don’t support structs (no byte-enable) so enabling this means that the C-program cannot contain structs. \hfill \\
+      \textbf{Required setting:} \textit{1}
+  \item[INFERRED\_RAM\_FORMAT] \hfill \\
+      Ensures that for inferred dual-ported RAMs, the behaviour of both ports of the RAM are defined in the same Verilog \textit{always} block (Altera has ports in separate \textit{always} blocks). Altera format gives error "multiple drivers" when synthesizing.\hfill \\
+      \textbf{Required setting:} \textit{xilinx}
+  \item[DIVIDER\_MODULE] \hfill \\
+      This uses generic divider modules, instead of the Altera primitives.\hfill \\
+      \textbf{Required setting:} \textit{generic}
+  \item[SDC\_NO\_CHAINING] \hfill \\
+      Chaining is a concept in \gls{hls} that allows operators to be stitched together combinationally in a single clock cycle, provided a target clock period constraint is met. When this parameter is set to 1, chaining is disabled and every operator will be scheduled in its own \gls{fsm} state. This will generally increase the number of cycles in the overall schedule (bad), but it may help the circuit Fmax (good). As long as we don't have device characterization (for the \gls{asic} target, this option should be enabled.\hfill \\
+      \textbf{Required setting:} \textit{1}
+  \item[EXPLICIT\_LPM\_MULTS] \hfill \\
+      This parameter explicitly instantiate all multipliers as Altera lpm\_mult modules. When this is off, multiplications are instantiated using the Verilog multiply operator.\hfill \\
+      \textbf{Required setting:} \textit{0}
+\end{description}
+\subsection{Framework settings and constraints:}
+The following commands can be used to vary the output from LegUp based on preferred goals like area or speed:
+\begin{description}
+  \item[set\_resource\_constraint] \hfill \\
+      Constrains the number of times a given operation can occur in a cycle. Increasing this parameter can allow instantiating of more modules performing the same operation, at the cost of increased area usage. 
+  \item[set\_operation\_sharing] \hfill \\
+      Turns operation sharing on or off for a given operation. Operation sharing adds multiplexing before and after an operation so that it can be used for multiple operations. This saves area by avoiding duplicate hardware.
+  \item[ENABLE\_PATTERN\_SHARING] \hfill \\
+      Enables resource sharing for patterns of computational operators in a program’s dataflow graph. The idea is that, in a given program, there may be commonly occurring patterns of operators that could be shared in the hardware, by putting multiplexers on the inputs and steering the right data in at the right time (based on the FSM state). This may save area in certain cases. \cite{hadjis2012impact}
+  \item[MB\_MINIMIZE\_HW] \hfill \\
+      When enabled, the reduced bit-widths analyzed by the bit-width minimization pass will be used in generating the Verilog design. If enabled, bit-width of some signals can be reduced, leading to decreased area.
+  \item[LOCAL\_RAMS] \hfill \\
+      Turns on alias analysis to determine when an array is only used in one function. These arrays can be placed in a block ram inside that hardware module instead of in global memory. This increases performance because local rams can be accessed in parallel while global memory is limited to two ports.
+  \item[loop\_pipeline] \hfill \\
+     This parameter enables pipelining for a given loop in the code. Loop pipelining allows a new iteration of the loop to begin before the current one has completed, achieving higher throughput. In a loop nest, only the innermost loop can be pipelined.
+\end{description}
+\section{Synthesis}
+Synthesis is performed to extract area information and to estimate power consumption for each of the reference designs. For synthesis towards \gls{asic} architectures, Nordic's toolflow is used, consisting of Synopsys Design Compiler \cite{syndescomp} together with cell library describing a 180nm technology. A Makefile is used to run synthesis. the \gls{rtl} design is read from a filelist (.fl) file and various \gls{tcl} scripts are run for setup, compilation, elaboration and mapping. An additional \gls{tcl} file sets constraints on the synthesis, for instance drive and load constraints, IO timing constraints and clock details.
+\section{Tool-flow}
+The creation of an automated tool-flow is an important part of building the framework for architectural exploration.  As mentioned in \cref{sec:motivation} it is desirable to create a framework that automatically can generate \gls{rtl}, simulate, synthesize and estimate power consumption from 1000's of different architectural variations. Using the block diagram of a tool-flow shown in \cref{fig:toolflowblock} we'll describe how this can be achieved. 
+\begin{figure}[hbpt]
+\centering
+\includegraphics[width=0.6\textwidth]{../figs/Toolflow.png}
+\caption{\label{fig:toolflowblock}Block diagram of tool-flow}
+\end{figure}
+Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports as well as post-layout netlist files, describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been ran for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area and power requirements.
+
+\section{Reference-design implementation}
+In order to compare results of \gls{hls} generated code towards hand-written Verilog, the same reference design are created in both Verilog and ANSI-C. The source code of each design are listed in \cref{sec:sourcecode}. Due to problems discussed in \cref{sec:encprob}, the designs have not been synthesised. It has therefore not been spent an extensive amount of time on verifying the correctness of the designs.
+\subsection{FIR-filter}
+
+A pseudocode for the implementation of a \gls{fir}-filter is given in \cref{alg:firfiter}
+
+\subsubsection{Verilog implementation}
+
+\subsubsection{ANSI-C implementation}
+
+
+
+
+
+\subsection{SAP-1 Architecture}
+
+\subsubsection{Verilog implementation}
+
+\subsubsection{ANSI-C implementation}
+

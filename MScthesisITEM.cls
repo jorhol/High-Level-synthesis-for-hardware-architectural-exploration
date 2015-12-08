@@ -56,6 +56,7 @@
 \RequirePackage{afterpage}
 
 % Lists
+\usepackage{paralist}
 \RequirePackage{enumitem}
 \RequirePackage{textcomp}
 \renewcommand{\labelitemi}{\textendash}

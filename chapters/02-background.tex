@@ -1,5 +1,5 @@
 \chapter{\label{chp:background}Background}
-In the early days of digital hardware design, gates design and layout were performed manually by hand. With the rapid growth in the numbers of transistors per digital chip design, this method quickly became too timeconsuming and thus the need for new and more automated design methods rose. \gls{rtl} design using \gls{hdl} has long been the standard in hardware design, but with the increasing demand for low power and small area in large \gls{soc} designs with multiple billion transistors, this methodology is no longer sufficient if hardware manufacturers want to hit the window of opportunity with their state-of-the-art product.
+In the early days of digital hardware design, gates design and layout were performed manually by hand. With the rapid growth in the numbers of transistors per digital chip design, this method quickly became too time-consuming and thus the need for new and more automated design methods rose. \gls{rtl} design using \gls{hdl} has long been the standard in hardware design, but with the increasing demand for low power and small area in large \gls{soc} designs with multiple billion transistors, this methodology is no longer sufficient if hardware manufacturers want to hit the window of opportunity with their state-of-the-art product.
 
 \section{\label{sec:hls}High-Level Synthesis}
 
@@ -26,7 +26,7 @@ Scheduling arranges all operations in an optimized sequence so that variables ar
 In the binding task, all clock-cycle crossing variables, operations and transfers are bound to a free resource in the timeframe when they are scheduled. Non-overlapping or mutually exclusive variables can be bound to the the same storage unit, and operations can be bound to the best optimized functional unit if multiple alternatives are available. Each transfer from component to component, either storage or functional unit, needs to be bound to a connection unit, such as a bus or a multiplexer.
 \subsubsection{RTL Generation}
 The generated \gls{rtl} usually consists of two parts, a control unit and a data path unit. The control unit is often implemented as a \gls{fsm} that sets control signals to the data path, and controls the current and next-state of the system. The data path contains storage , functional and connection units. Depending on the intensiveness of the binding step, the output \gls{rtl} can be tightly or loosely bound to the available resources. If an operation is not bound to a specific unit, it is up to the following logic synthesis of the \gls{rtl} to bind the operations to available resources. The different types of \gls{rtl} output is illustrated by the following example \textit{a = b * c} executing in state \textit{n}:\\
-\begin{minipage}[t][270px]{\textwidth}
+\begin{minipage}[t][300px]{\textwidth}
 \textbf{Without any binding:}%\hfill\vspace{-\baselineskip}
 \begin{verbatim}
 state (n): a = b * c;
@@ -58,7 +58,7 @@ go to state (n + 1);
 A loosely bound \gls{rtl} gives the synthesis the flexibility to optimize the unit binding to updates timing estimates and delays and loads given by the layout and floor-planning.
 \section{LegUp}
 The \gls{hls} tool used in this project is called LegUp \cite{canis2011legup}. LegUp is an open-source academic tool developed at the University of Toronto, Canada. LegUp's goal is to \textit{"allow researchers to experiment with new \gls{hls} algorithms without building a new infrastructure from scratch"} and their long-term vision is to \textit{"make \gls{fpga} programming easier for software developers"}. LegUp takes \acrshort{ansi} C as input and generates synthesizable Verilog \gls{hdl} as output. The developers of LegUp has primarily focused on support for a variety of \gls{fpga} boards from manufacturer Altera, but in the latest version (4.0), beta support for Xilinx devices and possibility to configure the tool to generate generic Verilog to target other \gls{fpga} vendors or even \gls{asic} through use of generic dividers, has been introduced. The big advantage of LegUp compared to similar, commercial tools is that it's open-source and thus can be configured to target different architectures, and the \gls{rtl} and \gls{hdl} generating part of the framework can be modified or replaced to fit the programmers needs.
-Since LegUp, in it's unmodified form, targets \gls{fpga} devices, it support three different synthesis flows; pure \gls{sw}, hybrid and pure \gls{hw}. The two first synthesis types will synthesize a TigerMIPS \cite{tigmips} soft processor, which will run the whole C file in pure \gls{sw} flow and part of the C file in hybrid flow while the rest will be synthesized into hardware. The pure \gls{hw} flow will synthesise the whole C file into hardware. It's the pure \gls{hw} flow that will be the focus of this project.
+Since LegUp, in its unmodified form, targets \gls{fpga} devices, it support three different synthesis flows; pure \gls{sw}, hybrid and pure \gls{hw}. The two first synthesis types will synthesize a TigerMIPS \cite{tigmips} soft processor, which will run the whole C file in pure \gls{sw} flow and part of the C file in hybrid flow while the rest will be synthesized into hardware. The pure \gls{hw} flow will synthesise the whole C file into hardware. It's the pure \gls{hw} flow that will be the focus of this project.
 
 \subsubsection{Producing Verilog Output}
 
@@ -83,11 +83,142 @@ The LegUp backend pass performs allocation, scheduling and binding as described 
 \end{figure}
 \subsubsection{Intermediate Representation}
 
-\gls{llvm} uses an human readable assembly-like, strongly typed RISC instruction set as their \gls{ir}, with support for an infinite number of temporary registers of the form \%0, \%1, etc. \gls{llvm} \gls{ir} can also output a dense bitcode format for serialization.
+\gls{llvm} use a human readable assembly-like, strongly typed RISC instruction set as their \gls{ir}, with support for an infinite number of temporary registers of the form \%0, \%1, etc. \gls{llvm} \gls{ir} can also output a dense bitcode format for serialization.
+
+\section{Alternative hardware design methods}
+\gls{hls} is not the only alternative to \gls{hdl}-languages, if one want to design hardware at a higher level of abstraction. The following subsections will shortly describe two alternative approaches to hardware design. 
+\subsection{Chisel}
+One interesting approach to designing hardware with a higher level of abstraction, is the Chisel \gls{hcl} \cite{bachrach2012chisel} developed at UC Berkeley. Unlike \gls{hdl} languages like VHDL and Verilog, which were originally designed as simulation languages and later adopted as a basic for synthesis, Chisel were created as a \gls{hcl} and is thus \textit{synthesizable by construction}. This entails that no conversion from C, or other \gls{hll}, into gates is performed, only generation of generic low-level Verilog with no overhead. Chisel is a \gls{dsl} built on Scala \cite{odersky2004overview} with its own syntax, but Scala can also be used to get even greater abstraction in your design. A big advantage using Chisel is its high simulation speed, using C++-based cycle-accurate software simulators.
+\subsection{Functional programming}
+Functional programming is a relatively different method of hardware design, as it consists only of mathematical functions and immutable data. Two examples of hardware design using functional programming is C$\lambda$aSH \cite{baaij2009clash} and Lava \cite{bjesse1998lava}. Both Lava and C$\lambda$ash are compilers for the functional programming language Haskell, but while Lava is an embedded \gls{dsl} that utilizes custom libraries, C$\lambda$ash use a static analysis approach towards synthesis, using Haskell syntax and semantics.
 
 \section{\label{sec:powest}Power and area estimation}
 
 In order to compare different use-cases and result generated by LegUp, the area and power-usage will be estimated. Since this is not the main objective of this project, the automated area and power estimation tool-flow created by Joar Talstad in his specialization project \cite{talstad14project} and master thesis \cite{talstad15master} will be adapted for this purpose. The tool-flow he created uses Synopsys Primetime PX for power analysis and estimation.
 
 \section{Information and tool-flow}
-LegUp utilizes Makefiles to perform the \gls{hls} flow. The power and area estimation tool-flow described in section \ref{sec:powest} also use Makefiles for its flow. It will thus be suitable to create a single Makefile that controls the information flow from the input of a C file to the output of Verilog files along with scorefiles on the area and power estimates. 
+LegUp utilizes Makefiles to perform the \gls{hls} flow. The power and area estimation tool-flow described in section \ref{sec:powest} also use Makefiles for its flow. It will thus be suitable to create a single Makefile that controls the information flow from the input of a C file to the output of Verilog files along with scorefiles on the area and power estimates. However, due to that the \gls{hls}-tool LegUp is located on a VirtualBox image while the synthesis and power-estimation tools are located on Nordic's servers, it is not possible to make a single workflow.
+
+\section{Reference designs}
+In order to evaluate the performance and overhead in power and area generated by LegUp, two reference designs is created to compare the produced results from LegUp towards the same design written in native Verilog \gls{hdl}. To evaluate whether the structure of the design impact the overhead on the output, the first design contains a regular structure where most of the work is done combinatorially. It were desided that the first reference design should be a \gls{fir}-filter. The second design contains a state machine, as it is interesting to see if the \gls{fsm} implemented by LegUp generates less overhead if the design itself is a state machine. The choice landed on designing a \gls{sap-1} architecture.
+\subsection{FIR-filter}
+\gls{fir}-filter is a one of two filter types of linear time-invariant systems, used in digital signal processing application. The impulse response of a \gls{fir}-filter is zero outside some finite time interval.
+A general \gls{fir}-filter can be described by the differential equation \cite{FILTERSWEB07}:
+\begin{equation}
+    y(n)=\sum\limits_{m=0}^{M} b_mx(n-m)
+    \label{eq:firfilterdiff}
+\end{equation}
+with the impulse response given by:
+\begin{equation}
+    h(n)\triangleq
+    \begin{cases}
+    \begin{tabular}{ll}
+      $0,$ & $n < 0$  \\
+      $b_n,$ & $0 \leq n \leq M$  \\
+      $0,$ & $n > M$   
+      \end{tabular}
+    \end{cases}
+    \label{eq:firfilterimp}
+\end{equation}
+From \cref{eq:firfilterdiff} and \cref{eq:firfilterimp} we get the convolution equation:
+\begin{equation}
+    y(n)=\sum\limits_{m=-\infty}^{\infty} h(m)x(n-m) \triangleq h(n) \ast x(n)
+    \label{eq:firfilterconv}
+\end{equation}
+The \gls{fir}-filter can also be described by its system function:
+\begin{equation}
+    H(z)=\sum\limits_{k=0}^{M-1} b_kz^{-k}
+    \label{eq:firfiltersys}
+\end{equation}
+Figure \ref{fig:firfilter} shows the direct form representation of a N-order \gls{fir}-filter with N+1 taps. 
+\begin{figure}[hbpt]
+\centering
+\includegraphics[width=\textwidth]{../figs/FIRFilter.png}
+\caption{\label{fig:firfilter}Direct form representation of a N-order \gls{fir}-filter}
+\end{figure}
+Even though the process of designing a \gls{fir}-filter might not be a trivial task, the implementation of a already designed filter is simple. As seen from \cref{eq:firfilterconv}, the filter can be described by the convolution formula, which implies that the filter can be implemented as convolution 
+
+\subsection{SAP-1 architecture}
+The \gls{sap-1} 8-bit architecture were introduced in \cite{malvino1983digital} as a beginners introduction to \gls{cpu}s, which can be implemented using simple hardware components. Figure \ref{fig:sap1arch} shows a block diagram of the \gls{sap-1} architecture. Each block correspond to a module. Signals starting with an asterisk (*) are active low. 
+\begin{figure}[hbpt]
+\centering
+\includegraphics[width=0.6\textwidth]{../figs/SAP1.png}
+\caption{\label{fig:sap1arch}Block diagram of \gls{sap-1} architecture}
+\end{figure}
+The architecture consists of 5 different instructions, listed in table \ref{tab:sap1instr}.
+
+\begin{table}[hbpt]
+    \centering
+    \caption{\label{tab:sap1instr}Description of instructions in \gls{sap-1} architecture}
+    \begin{tabular}{lll}
+      \textbf{Instruction} & \textbf{Opcode} & \textbf{Description} \\
+      \hline
+      LDA & 0000 & Load RAM data into accumulator \\
+      \hline
+      ADD & 0001 & Add RAM data to accumulator \\
+      \hline
+      SUB & 0010 & Subtract RAM data from accumulator \\
+      \hline
+      OUT & 1110 & Load accumulator data into output register \\
+      \hline
+      HLT & 1111 & Stop processing\\
+    \end{tabular}
+\end{table}
+\noindent
+Below a brief description of each module is given. Note that the modules "Output register" and "Binary display is for visual display of results, and are therefore not necessary in an integrated circuit implementation. In order to test and use the implemented circuits, it is also necessary to add some logic for adding instructions and data to memory.
+
+\begin{description}
+    \item[Program counter] \hfill \\
+    The program counter keeps track of where in the program we are. The counter is reset to 0 at program start and increments when $C_P$ is set. When $E_P$ is set, the value of the counter is output to Wbus.
+    \item[Input and MAR] \hfill \\
+    Input and Memory Address Register (MAR) is used to latch  memory location address, provided by program counter or instruction register, to the RAM module. When $\overline{L}_M$ is set, the content of Wbus is loaded into the MAR.  
+    \item[16x8 RAM] \hfill \\
+    The RAM-module can store 16 8-bit words of data or instructions. When $\overline{CE}$ is set, the content of the address given by MAR is output to Wbus.
+    \item[Instruction register] \hfill \\
+    The Instruction register is used to hold an instruction fetched from memory. When $\overline{L}_I$ is set, the content of Wbus is loaded into the register. When $\overline{E}_I$ is set, the lower (instruction data) 4 bit of the register is output to Wbus. The upper 4 bit of the register (instruction opcode) is submitted to the controller/sequencer.
+    \item[Controller/sequencer] \hfill \\
+    The controller/sequencer module generates the clock (CLK) and clear (CLR) signals, as well as the control signals that controls all the other modules of the system. The control-word of each state-instruction combination is listed in \cref{tab:sap1control}.
+    \item[Accumulator A] \hfill \\
+    
+    \item[Adder/subtractor] \hfill \\
+    2's complement adder-subtracter. $S_U$ set low gives the sum $S=A+B$ and $S_U$ set high gives the sum $S=A+B'$, where $B'$ is the bit-wise inverted B-register. When $E_U$ is set, the calculated sum is output to Wbus.
+    \item[B register] \hfill \\
+    Buffer register for arithmetic operations. When $\overline{L}_B$ is set, the content of Wbus is loaded into the register. The register data is submitted to the adder/subtractor for addition or subtraction from the accumulator data.
+    \item[Output register] \hfill \\
+    The ouptput register is used to transfer the results of a computer run to "the outside world". When $\overline{L}_O$ is set, the content of Wbus is loaded into the register. 
+    \item[Binary display] \hfill \\
+    Row of 8 LEDs, used to visualize result stored in output register. This module is left out of the design.
+\end{description}
+\begin{table}[hbpt]
+    \centering
+    \caption{\label{tab:sap1control}Control signals for each state and instruction combo in \gls{sap-1} architecture}
+    \begin{tabular}{p{0.8cm}lp{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}p{0.3cm}}
+    \textbf{State} & \textbf{Instruction} & $C_P$ & $E_P$ & $\overline{L}_M$ & $\overline{CE}$ & $\overline{L}_I$ & $\overline{E}_I$ & $\overline{L}_A$ & $E_A$ & $S_U$ & $E_U$ & $\overline{L}_B$ & $\overline{L}_O$\\
+    \hline
+    T1 &All&	        0&	1&	0&	1&	1&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    T2 &All&	        1&	0&	1&	1&	1&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    T3 &All&	        0&	0&	1&	0&	0&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    \multirow{3}{*}{T4}& LDA,ADD,SUB &  0&	0&	0&	1&	1&	0&	1&	0&	0&	0&	1&	1\\
+    \cline{2-14}
+    & OUT&	        0&	0&	1&	1&	1&	1&	1&	1&	0&	0&	1&	0\\
+    \cline{2-14}
+    & Others&	    0&	0&	1&	1&	1&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    \multirow{3}{*}{T5} &LDA&	        0&	0&	1&	0&	1&	1&	0&	0&	0&	0&	1&	1\\
+    \cline{2-14}
+    &ADD,SUB&	    0&	0&	1&	0&	1&	1&	1&	0&	0&	0&	0&	1\\
+    \cline{2-14}
+    &Others&	    0&	0&	1&	1&	1&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    \multirow{3}{*}{T6} &ADD&	        0&	0&	1&	1&	1&	1&	0&	0&	0&	1&	1&	1\\
+    \cline{2-14}
+    &SUB&	        0&	0&	1&	1&	1&	1&	0&	0&	1&	1&	1&	1\\
+    \cline{2-14}
+    &Others&	    0&	0&	1&	1&	1&	1&	1&	0&	0&	0&	1&	1\\
+    \hline
+    \end{tabular}
+\end{table}
+
