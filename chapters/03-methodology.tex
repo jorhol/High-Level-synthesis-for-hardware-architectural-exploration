@@ -45,7 +45,7 @@ The following commands can be used to vary the output from LegUp based on prefer
   \item[loop\_pipeline] \hfill \\
      This parameter enables pipelining for a given loop in the code. Loop pipelining allows a new iteration of the loop to begin before the current one has completed, achieving higher throughput. In a loop nest, only the innermost loop can be pipelined.
 \end{description}
-\section{Synthesis}
+\section{Simulation, synthesis and layout}
 Synthesis is performed to extract area information and to estimate power consumption for each of the reference designs. For synthesis towards \gls{asic} architectures, Nordic's toolflow is used, consisting of Synopsys Design Compiler \cite{syndescomp} together with cell library describing a 180nm technology. A Makefile is used to run synthesis. the \gls{rtl} design is read from a filelist (.fl) file and various \gls{tcl} scripts are run for setup, compilation, elaboration and mapping. An additional \gls{tcl} file sets constraints on the synthesis, for instance drive and load constraints, IO timing constraints and clock details.
 \section{Tool-flow}
 The creation of an automated tool-flow is an important part of building the framework for architectural exploration.  As mentioned in \cref{sec:motivation} it is desirable to create a framework that automatically can generate \gls{rtl}, simulate, synthesize and estimate power consumption from 1000's of different architectural variations. Using the block diagram of a tool-flow shown in \cref{fig:toolflowblock} we'll describe how this can be achieved. 
@@ -54,7 +54,7 @@ The creation of an automated tool-flow is an important part of building the fram
 \includegraphics[width=0.6\textwidth]{../figs/Toolflow.png}
 \caption{\label{fig:toolflowblock}Block diagram of tool-flow}
 \end{figure}
-Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports as well as post-layout netlist files, describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been ran for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area and power requirements.
+Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports as well as post-layout netlist files describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been ran for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area and power requirements.
 
 \section{Reference-design implementation}
 In order to compare results of \gls{hls} generated code towards hand-written Verilog, the same reference design are created in both Verilog and ANSI-C. The source code of each design are listed in \cref{sec:sourcecode}. Due to problems discussed in \cref{sec:encprob}, the designs have not been synthesised. It has therefore not been spent an extensive amount of time on verifying the correctness of the designs.
@@ -67,12 +67,13 @@ A pseudocode for the implementation of a \gls{fir}-filter is given in \cref{alg:
 \subsubsection{ANSI-C implementation}
 
 
-
+Convolution are easily implemented in C. As there are
 
 
 \subsection{SAP-1 Architecture}
 
 \subsubsection{Verilog implementation}
-
+The \gls{sap-1} architecture are easily implemented in Verilog. 
 \subsubsection{ANSI-C implementation}
+When starting to design the \gls{sap-1} architecture in C, some potential problems were quickly discovered. The first problem is that it is hard to divide the architecture into the modules shown in \cref{fig:sap1arch}. The second problem is that it's hard to force the running of the program into 6 states, each lasting one clock cycle, when you have no control over the clock. When synthesizing the design into Verilog, it might be reduced to a single \gls{fsm}, doing all the work in just one cycle. The third problem is that as there are no bus capabilities in C, the data are just transferred using standard variables.
 

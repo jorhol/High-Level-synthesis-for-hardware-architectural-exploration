@@ -16,5 +16,7 @@ When designing digital hardware circuits, you often want (and in some cases need
 \caption{\label{fig:andgate34}3-bit input versus 4-bit input AND-gate}
 \end{figure}
 Technically this is a limitation inherited from the lack of logical data-types in C, but this problem needs to be addressed if LegUp shall be used as an architectural exploration framework.
+\subsection{\label{subsec:parameterprobs}Parameters}
+The lack of support for transferring parameters from the C code into the generated Verilog makes it harder to instantiate modules based on widths or depths of different parameters. Often this is desirable in order to reuse the modules for a variety of given parameter values.
 \section{\label{sec:synthres}Synthesis results}
 Due to the above mentioned problems, some manual alteration of the generated Verilog had to be made in order for the results from LegUp to be comparable to the results from the native Verilog.
