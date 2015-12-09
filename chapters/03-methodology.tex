@@ -3,7 +3,7 @@
 
 \section{LegUp setup}
 The developers of LegUp has provided a \gls{vdi}-file for VirtualBox, to let users get started with the tool quickly. The image contains the \gls{os} \textit{Ubuntu 14.04} and comes ready with all the tools needed for running \gls{hls}, including \textit{ModelSim} for simulation and \textit{Altera Quartus II} for synthesis. The tool can also be installed from source code, which will be necessary if the tool shall be incorporated into an existing work-flow or server infrastructure.
-For this thesis, an isolated test-environment were needed and thus, the provided \gls{vdi}-file were appropriate. The image containing \textit{LegUp 4.0} were downloaded from the LegUp web-page and setup in VirtualBox according to the instructions given on the web-page. 
+For this thesis, an isolated test-environment were needed and thus, the provided \gls{vdi}-file were appropriate. The image containing \textit{LegUp 4.0} were downloaded from the LegUp web-page and setup in VirtualBox according to the instructions given on the web-page \cite{legupgetstarted}. 
 
 \section{HLS constraints and configuration}
 LegUp use \gls{tcl}-files for setting constraints and configuring the \gls{hls}-flow. This section will look on a set of \gls{tcl}-commands that is relevant when creating \gls{hdl}-code compliant with \gls{asic} synthesis.
@@ -57,15 +57,55 @@ The creation of an automated tool-flow is an important part of building the fram
 Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports as well as post-layout netlist files describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been ran for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area and power requirements.
 
 \section{Reference-design implementation}
-In order to compare results of \gls{hls} generated code towards hand-written Verilog, the same reference design are created in both Verilog and ANSI-C. The source code of each design are listed in \cref{sec:sourcecode}. Due to problems discussed in \cref{sec:encprob}, the designs have not been synthesised. It has therefore not been spent an extensive amount of time on verifying the correctness of the designs.
+In order to compare results of \gls{hls} generated code towards hand-written Verilog, the same reference design are created in both Verilog and C. The source code of each design are listed in \cref{sec:sourcecode}. Due to problems discussed in \cref{sec:encprob}, the designs have not been synthesised. It has therefore not been spent an extensive amount of time on verifying the correctness of the designs.
 \subsection{FIR-filter}
 
-A pseudocode for the implementation of a \gls{fir}-filter is given in \cref{alg:firfiter}
+The subsections below shows the algorithms and pseudocode for implementation of the reference desings.
 
 \subsubsection{Verilog implementation}
 
-\subsubsection{ANSI-C implementation}
+A simple implementation of a FIR-filter is listed in \cref{lst:firfilterverilog}. The filter is converted to Verilog from a SystemVerilog example given in \cite{mehler2014digital}. This example is a direct form \gls{fir}-filter of N-order with a data pipeline of N-1. The filter operates on input data, and the output is full precision of internal caluclation. Parameters are included in the implementation to easily be able to change the width of the input or the depth of the pipeline.
 
+\lstset{language=SystemVerilog, style=Verilogstyle}
+\begin{lstlisting}[caption={FIR-filter implemented in Verilog},label=lst:firfilterverilog]
+module direct2 #(WIDTH = 4, DEPTH = 4)
+  (
+	input ck, 
+	input signed [WIDTH-1:0] dataIn,
+	output logic signed[2*WIDTH-1+\$clog2(DEPTH):0] dataOut
+	);
+	
+	logic signed [WIDTH-1:0] sr [DEPTH-2:0];
+	logic signed [2*WIDTH-1:0] products [DEPTH-1:0];
+	parameter logic signed [WIDTH-1:0] coeff [DEPTH-1:0] = {1,2,3,4};
+	logic signed [2*WIDTH-1 + \$clog2(DEPTH):0] sum;
+	// Test
+	always_ff @(posedge ck) begin
+		sr[0] <= dataIn;
+		sr[DEPTH-2:1] <= sr[DEPTH-3:0]:
+	end
+	
+	always_comb begin
+		products[0] = dataIn * coeff[0];
+		for (int i = 1; i < DEPTH; i++)
+			products[i] = sr[i-1] * coeff[i];
+	end
+	
+	always_comb begin
+		sum = products[0]
+		for (int i = 1; i < DEPTH; i++)
+			sum = sum + products[i];
+	end
+	
+	always_comb dataOut = sum;
+endmodule
+\end{lstlisting}
+\subsubsection{C implementation}
+The C implementation of the filter is based on the SystemVerilog example for \cite{mehler2014digital}, to make the implementations comparable.
+\lstset{language=C,style=Cstyle}
+\begin{lstlisting}[caption={FIR-filter implemented in C},label=lst:firfilterc]
+
+\end{lstlisting}
 
 Convolution are easily implemented in C. As there are
 
@@ -74,6 +114,6 @@ Convolution are easily implemented in C. As there are
 
 \subsubsection{Verilog implementation}
 The \gls{sap-1} architecture are easily implemented in Verilog. 
-\subsubsection{ANSI-C implementation}
+\subsubsection{C implementation}
 When starting to design the \gls{sap-1} architecture in C, some potential problems were quickly discovered. The first problem is that it is hard to divide the architecture into the modules shown in \cref{fig:sap1arch}. The second problem is that it's hard to force the running of the program into 6 states, each lasting one clock cycle, when you have no control over the clock. When synthesizing the design into Verilog, it might be reduced to a single \gls{fsm}, doing all the work in just one cycle. The third problem is that as there are no bus capabilities in C, the data are just transferred using standard variables.
 

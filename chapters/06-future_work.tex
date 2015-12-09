@@ -16,3 +16,7 @@ There are two possible alternatives to fix these problems:
 
 The post-processing solution is clearly the simplest alternative, as it only requires a parser that can remove or reformat code output. This alternative is however very uncertain with respect to the quality of results. The question is whether the output Verilog contains enough information to transform it into a usable Verilog code.
 The alternative of altering the LegUp and \gls{llvm} libraries, offers much greater opportunities for you to get a functional and correct Verilog output. The downside of this alternative is that the LegUp libraries are quite large, and searching, understanding and altering large parts of the code can be time-consuming. 
+
+Adding the flag \textit{-ffreestanding} to the variable CLANG\_FLAG in the file Makefile.config fixes this problem by not issuing the error. Return values still need to be single variable, pointer or struct (struct not supported without altsyncram)
+
+Extending the Verilog generating part of LegUp into outputting Verilog compliant to Nordic's \gls{ddvc}.

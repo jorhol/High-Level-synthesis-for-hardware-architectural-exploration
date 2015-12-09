@@ -72,7 +72,9 @@
 \renewcommand{\arraystretch}{1.2}
 
 % Links
-\RequirePackage{hyperref}
+\usepackage{url}
+\usepackage{breakurl} 
+\RequirePackage[breaklinks]{hyperref}
 \RequirePackage{memhfixc}
 \hypersetup{
   colorlinks=true, 

@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{chp:introduction} 
 \section{\label{sec:motivation}Motivation}
-The requirements for power-efficiency in hardware design is rapidly increasing as more and more end-user products runs on battery power. Long battery time is important for many applications, and this demand forces hardware designers to work harder to find the best trade-of between power, area and performance. Traditional hardware exploration to find the best architectural model is very time consuming as it involves many steps, for instance an \gls{dsp} application design process can go like follows:
+The requirements for power-efficiency in hardware design is rapidly increasing as more and more end-user products runs on battery power. Long battery time is important for many applications, and this demand forces hardware designers to work harder to find the best trade-of between power, area, and performance. Hardware exploration is used to find the best architectural model of a design. This process is very time consuming as it involves many steps, for instance an \gls{dsp} application design process can include the following steps:
 \begin{compactenum}
     \item Make Matlab simulations 
     \item Decide:
@@ -20,7 +20,7 @@ The requirements for power-efficiency in hardware design is rapidly increasing a
     \item Simulate
     \item Extract power consumption
 \end{compactenum}
-\gls{hls} has been proposed as a possible way to shorten this design cycle, by taking advantage of the automatic translation of functional description into hardware, one can make optimizations to the system and produce multiple architectural options to choose from. The ultimate goal would be to implement a framework that can automate this process by running optimizations over an entire system and create, simulate and estimate energy consumption from 1000’s of architectural variations. This way, the design process will simplify into the following flow:
+\gls{hls} has been proposed as a possible way to shorten this design cycle, by taking advantage of the automatic translation of functional description into digital hardware, one can make optimizations to the system and produce multiple architectural options to choose from. For this project the ultimate goal would be to implement a framework that can automate this process by running optimizations over an entire system and create, simulate, and estimate energy consumption from 1000’s of architectural variations. This way, the design process is simplified into the following flow:
 \begin{compactenum}
     \item Describe circuit functionality in \gls{hll}
     \item Run framework
@@ -30,8 +30,8 @@ The requirements for power-efficiency in hardware design is rapidly increasing a
 Traditional \gls{hls}-tools has either been commercial with very limited access to the source code, or academic open-source tools that were not mature enough for usage in a commercial application. LegUp, the tool examined in this project has reached a maturity not before seen in an academic open-source \gls{hls}-tool.
 \section{Project objectives}
 \begin{enumerate}
-    \item Investigate how LegUp performs \gls{hls} and how Verilog is generated. Then look into the possibility of changing or replacing this process in order to generate Verilog suited to our needs. This objective will discover if there are potential problems with LegUp that needs to be handled in order for the other objectives to be achieved.
-    \item Specify a \gls{hls} framework that can be easily reconfigured to the users need. The framework shall take some C-project as input, translate this into \gls{ir} and further into a pure-dataflow \gls{rtl} implementation. From this point, users shall be able to set constraints and select optimization goals like speed, area and so on. The framework shall further generate synthesizable Verilog, generic enough to target any architecture.
-    \item Define a reference design and implement this in both C and Verilog for reference comparison to area and power of a standard Verilog design and for generating synthesizable output for a variety of different architectures and optimizations. This will include a design-case compliant to Nordic’s \gls{ddvc}.
-    \item Make a script that automates the process of \gls{hls}, synthesis, layout and power analysis. The script shall take a C-project as input and output a score-file reporting area and power estimates for each of the targeted architectures.
+    \item Investigate how LegUp performs \gls{hls} and how Verilog is generated. Then look into the possibility of changing or replacing this process in order to generate Verilog suitable for synthesis towards an ASIC architecture. This objective will discover if there are potential problems with LegUp that needs to be handled in order for the other objectives to be achieved.
+    \item Specify a \gls{hls} framework that can be used for architectural exploration. The framework  automatically perform \gls{hls}, simulation, synthesis, layout and estimate power consumption of the design for a variety if different architectural variations and generate score-files, showing the designer area usage, speed and power consumption for each alternative. This way the designer can choose design based on design goals and constraints.
+    \item Define a reference design and implement this in both C and Verilog for comparison of area and power usage between a design written directly in Verilog and multiple \gls{hls}-generated Verilog outputs from a variety of different architectural variations and optimization goals. This will include a design-case compliant to Nordic’s \gls{ddvc}.
+    \item Make a script that automates the process of the abowe described framework. The script shall take a file-list pointing to a C-project as input together with constraints and optimization goals like speed, area or power consumption, specified by the user. The framework shall return a score-file reporting area, speed and power estimates for each of the targeted architectures.
 \end{enumerate}

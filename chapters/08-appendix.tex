@@ -1,42 +1,254 @@
 \chapter{Appendix}
 
-\section{\label{sec:sourcecode}Source codes}
+\lstset{language=LLVM,style=Cstyle}
+\section{LLVM IR}
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\lstdefinestyle{Cstyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{green}\ttfamily,
-    keywordstyle=\color{blue}\ttfamily,
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{red}\ttfamily,
-    basicstyle=\ttfamily,
-    morecomment=[l][\color{magenta}\ttfamily]{\#},
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
+\begin{lstlisting}
+; ModuleID = 'sra.bc'
+target datalayout = "e-m:e-p:32:32-f64:32:64-f80:32-n8:16:32-S128"
+target triple = "i386-unknown-linux-gnu"
+
+; Function Attrs: noinline nounwind
+define i32 @main(i32 %argc, i8** %argv) #0 {
+  %1 = load i8** %argv, align 4
+  %2 = load i8* %1, align 1
+  %3 = icmp slt i8 %2, 0
+  br i1 %3, label %4, label %9
+
+; <label>:4                                       ; preds = %0
+  %5 = load i8** %argv, align 4
+  %6 = load i8* %5, align 1
+  %7 = sext i8 %6 to i32
+  %8 = sub nsw i32 0, %7
+  br label %13
+
+; <label>:9                                       ; preds = %0
+  %10 = load i8** %argv, align 4
+  %11 = load i8* %10, align 1
+  %12 = sext i8 %11 to i32
+  br label %13
+
+; <label>:13                                      ; preds = %9, %4
+  %14 = phi i32 [ %8, %4 ], [ %12, %9 ]
+  %15 = getelementptr inbounds i8** %argv, i32 1
+  %16 = load i8** %15, align 4
+  %17 = load i8* %16, align 1
+  %18 = icmp slt i8 %17, 0
+  br i1 %18, label %19, label %25
+
+; <label>:19                                      ; preds = %13
+  %20 = getelementptr inbounds i8** %argv, i32 1
+  %21 = load i8** %20, align 4
+  %22 = load i8* %21, align 1
+  %23 = sext i8 %22 to i32
+  %24 = sub nsw i32 0, %23
+  br label %30
+
+; <label>:25                                      ; preds = %13
+  %26 = getelementptr inbounds i8** %argv, i32 1
+  %27 = load i8** %26, align 4
+  %28 = load i8* %27, align 1
+  %29 = sext i8 %28 to i32
+  br label %30
+
+; <label>:30                                      ; preds = %25, %19
+  %31 = phi i32 [ %24, %19 ], [ %29, %25 ]
+  %32 = icmp sgt i32 %14, %31
+  br i1 %32, label %33, label %48
+
+; <label>:33                                      ; preds = %30
+  %34 = load i8** %argv, align 4
+  %35 = load i8* %34, align 1
+  %36 = icmp slt i8 %35, 0
+  br i1 %36, label %37, label %42
+
+; <label>:37                                      ; preds = %33
+  %38 = load i8** %argv, align 4
+  %39 = load i8* %38, align 1
+  %40 = sext i8 %39 to i32
+  %41 = sub nsw i32 0, %40
+  br label %46
+
+; <label>:42                                      ; preds = %33
+  %43 = load i8** %argv, align 4
+  %44 = load i8* %43, align 1
+  %45 = sext i8 %44 to i32
+  br label %46
+
+; <label>:46                                      ; preds = %42, %37
+  %47 = phi i32 [ %41, %37 ], [ %45, %42 ]
+  br label %66
+
+; <label>:48                                      ; preds = %30
+  %49 = getelementptr inbounds i8** %argv, i32 1
+  %50 = load i8** %49, align 4
+  %51 = load i8* %50, align 1
+  %52 = icmp slt i8 %51, 0
+  br i1 %52, label %53, label %59
+
+; <label>:53                                      ; preds = %48
+  %54 = getelementptr inbounds i8** %argv, i32 1
+  %55 = load i8** %54, align 4
+  %56 = load i8* %55, align 1
+  %57 = sext i8 %56 to i32
+  %58 = sub nsw i32 0, %57
+  br label %64
+
+; <label>:59                                      ; preds = %48
+  %60 = getelementptr inbounds i8** %argv, i32 1
+  %61 = load i8** %60, align 4
+  %62 = load i8* %61, align 1
+  %63 = sext i8 %62 to i32
+  br label %64
+
+; <label>:64                                      ; preds = %59, %53
+  %65 = phi i32 [ %58, %53 ], [ %63, %59 ]
+  br label %66
+
+; <label>:66                                      ; preds = %64, %46
+  %67 = phi i32 [ %47, %46 ], [ %65, %64 ]
+  %68 = load i8** %argv, align 4
+  %69 = load i8* %68, align 1
+  %70 = icmp slt i8 %69, 0
+  br i1 %70, label %71, label %76
+
+; <label>:71                                      ; preds = %66
+  %72 = load i8** %argv, align 4
+  %73 = load i8* %72, align 1
+  %74 = sext i8 %73 to i32
+  %75 = sub nsw i32 0, %74
+  br label %80
+
+; <label>:76                                      ; preds = %66
+  %77 = load i8** %argv, align 4
+  %78 = load i8* %77, align 1
+  %79 = sext i8 %78 to i32
+  br label %80
+
+; <label>:80                                      ; preds = %76, %71
+  %81 = phi i32 [ %75, %71 ], [ %79, %76 ]
+  %82 = getelementptr inbounds i8** %argv, i32 1
+  %83 = load i8** %82, align 4
+  %84 = load i8* %83, align 1
+  %85 = icmp slt i8 %84, 0
+  br i1 %85, label %86, label %92
+
+; <label>:86                                      ; preds = %80
+  %87 = getelementptr inbounds i8** %argv, i32 1
+  %88 = load i8** %87, align 4
+  %89 = load i8* %88, align 1
+  %90 = sext i8 %89 to i32
+  %91 = sub nsw i32 0, %90
+  br label %97
+
+; <label>:92                                      ; preds = %80
+  %93 = getelementptr inbounds i8** %argv, i32 1
+  %94 = load i8** %93, align 4
+  %95 = load i8* %94, align 1
+  %96 = sext i8 %95 to i32
+  br label %97
+
+; <label>:97                                      ; preds = %92, %86
+  %98 = phi i32 [ %91, %86 ], [ %96, %92 ]
+  %99 = icmp slt i32 %81, %98
+  br i1 %99, label %100, label %115
+
+; <label>:100                                     ; preds = %97
+  %101 = load i8** %argv, align 4
+  %102 = load i8* %101, align 1
+  %103 = icmp slt i8 %102, 0
+  br i1 %103, label %104, label %109
+
+; <label>:104                                     ; preds = %100
+  %105 = load i8** %argv, align 4
+  %106 = load i8* %105, align 1
+  %107 = sext i8 %106 to i32
+  %108 = sub nsw i32 0, %107
+  br label %113
+
+; <label>:109                                     ; preds = %100
+  %110 = load i8** %argv, align 4
+  %111 = load i8* %110, align 1
+  %112 = sext i8 %111 to i32
+  br label %113
+
+; <label>:113                                     ; preds = %109, %104
+  %114 = phi i32 [ %108, %104 ], [ %112, %109 ]
+  br label %133
+
+; <label>:115                                     ; preds = %97
+  %116 = getelementptr inbounds i8** %argv, i32 1
+  %117 = load i8** %116, align 4
+  %118 = load i8* %117, align 1
+  %119 = icmp slt i8 %118, 0
+  br i1 %119, label %120, label %126
+
+; <label>:120                                     ; preds = %115
+  %121 = getelementptr inbounds i8** %argv, i32 1
+  %122 = load i8** %121, align 4
+  %123 = load i8* %122, align 1
+  %124 = sext i8 %123 to i32
+  %125 = sub nsw i32 0, %124
+  br label %131
+
+; <label>:126                                     ; preds = %115
+  %127 = getelementptr inbounds i8** %argv, i32 1
+  %128 = load i8** %127, align 4
+  %129 = load i8* %128, align 1
+  %130 = sext i8 %129 to i32
+  br label %131
+
+; <label>:131                                     ; preds = %126, %120
+  %132 = phi i32 [ %125, %120 ], [ %130, %126 ]
+  br label %133
+
+; <label>:133                                     ; preds = %131, %113
+  %134 = phi i32 [ %114, %113 ], [ %132, %131 ]
+  %135 = ashr i32 %67, 3
+  %136 = sub nsw i32 %67, %135
+  %137 = ashr i32 %134, 1
+  %138 = add nsw i32 %136, %137
+  %139 = icmp sgt i32 %67, %138
+  br i1 %139, label %140, label %141
+
+; <label>:140                                     ; preds = %133
+  br label %146
+
+; <label>:141                                     ; preds = %133
+  %142 = ashr i32 %67, 3
+  %143 = sub nsw i32 %67, %142
+  %144 = ashr i32 %134, 1
+  %145 = add nsw i32 %143, %144
+  br label %146
+
+; <label>:146                                     ; preds = %141, %140
+  %147 = phi i32 [ %67, %140 ], [ %145, %141 ]
+  ret i32 %147
 }
-\lstset{language=C,style=Cstyle,
-literate=%
-    *{0}{{{\color{red}0}}}1
-    {1}{{{\color{red}1}}}1
-    {2}{{{\color{red}2}}}1
-    {3}{{{\color{red}3}}}1
-    {4}{{{\color{red}4}}}1
-    {5}{{{\color{red}5}}}1
-    {6}{{{\color{red}6}}}1
-    {7}{{{\color{red}7}}}1
-    {8}{{{\color{red}8}}}1
-    {9}{{{\color{red}9}}}1}
+
+attributes #0 = { noinline nounwind "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }
+
+!llvm.ident = !{!0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0, !0}
+
+!0 = metadata !{metadata !"clang version 3.5.0 (tags/RELEASE_350/final)"}
+
+\end{lstlisting}
+
+\section{\label{sec:sourcecode}Source codes}
+\lstset{language=C,style=Cstyle%,
+%literate=%
+ %   *{0}{{{\color{red}0}}}1
+  %  {1}{{{\color{red}1}}}1
+   % {2}{{{\color{red}2}}}1
+%    {3}{{{\color{red}3}}}1
+%    {4}{{{\color{red}4}}}1
+%    {5}{{{\color{red}5}}}1
+%    {6}{{{\color{red}6}}}1
+%    {7}{{{\color{red}7}}}1
+%    {8}{{{\color{red}8}}}1
+%    {9}{{{\color{red}9}}}1
+}
+
 \subsection{FIR-filter - ANSI-C}
 \begin{lstlisting}[caption=FIR-filter implemented in C]
 #include <stdio.h>
