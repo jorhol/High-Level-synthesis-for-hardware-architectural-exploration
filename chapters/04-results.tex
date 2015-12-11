@@ -2,7 +2,7 @@
 \label{chp:resdisc}
 
 \section{HLS output from LegUp}
-As a quick introduction to how the output from LegUp looks, we will have a look at a simple example and what the output looks like. Since the code output is very large, it will be of more use to look at a figure describing the different parts of the code and how it is connected. Beware that this section describes output from LegUp when it is freshly installed, without any alterations or changing of setting. In general, the modules declared in the output Verilog file is described below:
+As a quick introduction to how the output from LegUp looks, we will have a look at a simple example and what the output looks like. Since the code output is very large, it will be of more use to look at a figure describing the different parts of the code and how it is connected. Beware that this section describes output from LegUp when it is freshly installed, without any alterations or changes so setting. In general, the modules declared in the output Verilog file are these:
 \begin{compactdesc}
     \item[top]Top module for Verilog. Instantiates main and memory\_controller modules.
     \item[main]Main function from C project. Contains \gls{fsm} that handles all functionality from original C program.
@@ -64,3 +64,6 @@ Technically this is a limitation inherited from the lack of logical data-types i
 The lack of support for transferring parameters from the C code into the generated Verilog makes it harder to instantiate modules based on widths or depths of different parameters. Often this is desirable in order to reuse the modules for a variety of given parameter values.
 \section{\label{sec:synthres}Synthesis results}
 Due to the above mentioned problems, some manual alteration of the generated Verilog had to be made in order for the results from LegUp to be comparable to the results from the native Verilog.
+
+\section{Tool-flow and script}
+Due to that the \gls{hls}-tool, LegUp, is located on a VirtualBox image while the synthesis and power-estimation tools are located on Nordic's servers, it is not possible to make a single workflow.

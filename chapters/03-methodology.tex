@@ -2,11 +2,11 @@
 \label{chp:methodology} 
 
 \section{LegUp setup}
-The developers of LegUp has provided a \gls{vdi}-file for VirtualBox, to let users get started with the tool quickly. The image contains the \gls{os} \textit{Ubuntu 14.04} and comes ready with all the tools needed for running \gls{hls}, including \textit{ModelSim} for simulation and \textit{Altera Quartus II} for synthesis. The tool can also be installed from source code, which will be necessary if the tool shall be incorporated into an existing work-flow or server infrastructure.
+The developers of LegUp has provided a \gls{vdi}-file for VirtualBox, to let users get started with the tool quickly. The image contains the \gls{os} \textit{Ubuntu 14.04} and comes ready with all the tools needed for running \gls{hls}, including web editions of \textit{ModelSim} for simulation and \textit{Altera Quartus II} for synthesis. The tool can also be installed from source code, which will be necessary if the tool shall be incorporated into an existing work-flow or server infrastructure.
 For this thesis, an isolated test-environment were needed and thus, the provided \gls{vdi}-file were appropriate. The image containing \textit{LegUp 4.0} were downloaded from the LegUp web-page and setup in VirtualBox according to the instructions given on the web-page \cite{legupgetstarted}. 
 
 \section{HLS constraints and configuration}
-LegUp use \gls{tcl}-files for setting constraints and configuring the \gls{hls}-flow. This section will look on a set of \gls{tcl}-commands that is relevant when creating \gls{hdl}-code compliant with \gls{asic} synthesis.
+LegUp use \gls{tcl}-files for setting constraints and configuring the \gls{hls}-flow. This section will look on a set of \gls{tcl}-commands that is relevant when creating \gls{hdl}-code compliant with \gls{asic} synthesis and some that can be used for a architectural exploration framework. Other availabe constraints are described in \cite{legupconst}.
 \subsection{Required settings}
 The following commands are required in order for LegUp to generate Verilog suitable for synthesis towards an \gls{asic} implementation:
 \begin{description}
@@ -35,7 +35,7 @@ The following commands can be used to vary the output from LegUp based on prefer
   \item[set\_resource\_constraint] \hfill \\
       Constrains the number of times a given operation can occur in a cycle. Increasing this parameter can allow instantiating of more modules performing the same operation, at the cost of increased area usage. 
   \item[set\_operation\_sharing] \hfill \\
-      Turns operation sharing on or off for a given operation. Operation sharing adds multiplexing before and after an operation so that it can be used for multiple operations. This saves area by avoiding duplicate hardware.
+      Turns operation sharing on or off for a given operation. Operation sharing adds multiplexing before and after an operation so that it can be used for multiple operations. This saves area by avoiding duplicate hardware, but multiplexers also requires area. Operations requiring less area than the necessary multiplexers should therefore not be shared.
   \item[ENABLE\_PATTERN\_SHARING] \hfill \\
       Enables resource sharing for patterns of computational operators in a program’s dataflow graph. The idea is that, in a given program, there may be commonly occurring patterns of operators that could be shared in the hardware, by putting multiplexers on the inputs and steering the right data in at the right time (based on the FSM state). This may save area in certain cases. \cite{hadjis2012impact}
   \item[MB\_MINIMIZE\_HW] \hfill \\
@@ -48,13 +48,13 @@ The following commands can be used to vary the output from LegUp based on prefer
 \section{Simulation, synthesis and layout}
 Synthesis is performed to extract area information and to estimate power consumption for each of the reference designs. For synthesis towards \gls{asic} architectures, Nordic's toolflow is used, consisting of Synopsys Design Compiler \cite{syndescomp} together with cell library describing a 180nm technology. A Makefile is used to run synthesis. the \gls{rtl} design is read from a filelist (.fl) file and various \gls{tcl} scripts are run for setup, compilation, elaboration and mapping. An additional \gls{tcl} file sets constraints on the synthesis, for instance drive and load constraints, IO timing constraints and clock details.
 \section{Tool-flow}
-The creation of an automated tool-flow is an important part of building the framework for architectural exploration.  As mentioned in \cref{sec:motivation} it is desirable to create a framework that automatically can generate \gls{rtl}, simulate, synthesize and estimate power consumption from 1000's of different architectural variations. Using the block diagram of a tool-flow shown in \cref{fig:toolflowblock} we'll describe how this can be achieved. 
+The creation of an automated tool-flow is an important part of building the framework for architectural exploration.  As mentioned in \cref{sec:motivation} it is desirable to create a framework that automatically can generate \gls{rtl}, simulate, synthesize and estimate power consumption from 1000's of different architectural variations. Based on the block diagram of a tool-flow shown in \cref{fig:toolflowblock} we'll describe how this can be achieved. 
 \begin{figure}[hbpt]
 \centering
 \includegraphics[width=0.6\textwidth]{../figs/Toolflow.png}
 \caption{\label{fig:toolflowblock}Block diagram of tool-flow}
 \end{figure}
-Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports as well as post-layout netlist files describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been ran for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area and power requirements.
+Starting on the right side, a framework is created to control the flow, give constraints to the different steps and keep score of results. On the top of the figure, a filelist pointing to one or multiple C source files is input to the \gls{hls}-tool, in this case, LegUp. Based on the \gls{hls}-constraints given by the framework, LegUp will perform \gls{hls} on the given source files and output a \gls{rtl} filelist pointing to the generated Verilog source files. In the next step, simulation is run on the generated \gls{rtl} to generate a \gls{vcd} file needed for power estimation. It also makes sense to perform simulation in order to verify that the generated design functions properly and as expected. Synthesis and layout are then performed on the \gls{rtl} with respect to constraints given by the framework, generating area and speed reports, as well as post-layout netlist-files describing the final circuitry. In the final step, post-layout netlist files and the \gls{vcd} file from simulation are used to estimate power consumption. The report from power estimation are stored in the framework, together with area and speed results, given constraints and \gls{rtl} filelist. The Framework will run the whole tool-flow multiple times with varying constraints in order to find the best solution. When the tool-flow has been run for all desirable variations, the results will be compared and output in a score-file. This allows the designer to compare different architectural variations and select the best suited solution based on speed, area, and power requirements.
 
 \section{Reference-design implementation}
 In order to compare results of \gls{hls} generated code towards hand-written Verilog, the same reference design are created in both Verilog and C. The source code of each design are listed in \cref{sec:sourcecode}. Due to problems discussed in \cref{sec:encprob}, the designs have not been synthesised. It has therefore not been spent an extensive amount of time on verifying the correctness of the designs.
@@ -101,13 +101,11 @@ module direct2 #(WIDTH = 4, DEPTH = 4)
 endmodule
 \end{lstlisting}
 \subsubsection{C implementation}
-The C implementation of the filter is based on the SystemVerilog example for \cite{mehler2014digital}, to make the implementations comparable.
+The C implementation of the filter is also based on the SystemVerilog example from \cite{mehler2014digital}, to make the implementations comparable.
 \lstset{language=C,style=Cstyle}
 \begin{lstlisting}[caption={FIR-filter implemented in C},label=lst:firfilterc]
 
 \end{lstlisting}
-
-Convolution are easily implemented in C. As there are
 
 
 \subsection{SAP-1 Architecture}
