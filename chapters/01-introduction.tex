@@ -27,7 +27,8 @@ The requirements for power-efficiency in hardware design is rapidly increasing a
     \item Select best result from reports
     \item Write \gls{hdl}-code
 \end{compactenum}
-Traditional \gls{hls}-tools has either been commercial, with very limited access to the source code, or academic open-source tools that were not mature enough for usage in a commercial application. LegUp, the tool examined in this project has reached a maturity not before seen in an academic open-source \gls{hls}-tool.
+Traditional \gls{hls}-tools has either been commercial, with very limited access to the source code, or academic open-source tools that were not mature enough for usage in a commercial application. LegUp, the tool examined in this project has reached a maturity not before seen in an academic open-source \gls{hls}-tool. Typically, \gls{hls}-tools generate a great amount of overhead, often in the range of 30-40\%,%TODO: need source% 
+due to the increased abstraction level of the functional specification. By incorporating Nordic Semiconductor's interfaces, coding style, and (\gls{ddvc}) into the Verilog generating part of the \gls{hls}-tool, the goal is to reduce this overhead as much as possible, preferably to just a few percentages.
 \section{Project objectives}
 \begin{enumerate}
     \item Investigate how LegUp performs \gls{hls} and how Verilog is generated. Then look into the possibility of changing or replacing this process in order to generate Verilog suitable for synthesis towards an ASIC architecture. This objective will discover if there are potential problems with LegUp that needs to be handled in order for the other objectives to be achieved.
