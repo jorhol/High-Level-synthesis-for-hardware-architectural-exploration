@@ -99,7 +99,7 @@ morestring=[b]“
     stringstyle=\color{red}\ttfamily,
     basicstyle=\ttfamily,
     morecomment=[l][\color{codepurple}\ttfamily]{\#},
-    breakatwhitespace=false,         
+breakatwhitespace=false,         
     breaklines=true,                 
     captionpos=b,                    
     keepspaces=true,                 
@@ -133,6 +133,7 @@ morestring=[b]“
 \selectlanguage{english}
 \pagenumbering{roman}
 \pagestyle{plain}
+\setlength{\parindent}{0pt}
 
 %% Only for the project; comment out the line below for the master's thesis; the front page will be generated automatically by DAIM
 \titleITEM
@@ -202,8 +203,8 @@ morestring=[b]“
 \include{chapters/03-methodology}
 \include{chapters/04-results}
 %%\include{chapters/05-discussion}
-\include{chapters/06-future_work}
-%%\include{chapters/07-conclusion}
+%\include{chapters/06-future_work}
+\include{chapters/05-conclusion}
 %% include here the other chapters
 
 \renewcommand*{\bibname}{References}
@@ -221,6 +222,6 @@ morestring=[b]“
  \renewcommand{\chaptername}{\appendixname}
 %% include below possible appendices (chapters)
 
-%\include{chapters/08-appendix}
+%\include{chapters/06-appendix}
 
 \end{document} 

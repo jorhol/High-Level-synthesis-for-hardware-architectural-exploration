@@ -35,15 +35,16 @@ int main(int inDataA, char *inDataB[]) {
 A project in Quartus can be created by running \verb!make p! and a full compilation can be executed by running \verb!make f!. The top module netlist of the example from \cref{lst:exampleCProgram} can be seen in \cref{fig:legupouttop}
 \begin{figure}[hbpt]
 \centering
-\includegraphics[width=\textwidth]{../figs/LegUpOutputTop.png}
-\caption{\label{fig:legupouttop}Top module output from LegUp HLS}
+\includegraphics[width=0.8\textwidth]{../figs/LegUpOutputTop.png}
+\caption{\label{fig:legupouttop}Top module of HLS-generated Verilog from LegUp synthesized in Quartus}
 \end{figure}
-Notice that the inputs to the instantiated main module, inDataA and inData,B does not propagate to the top module instantiation. Also, if we look inside the main module, inDataB is only mapped to the signal \textit{memory\_controller\_address\_a}. This is because inDataB is decleared as a pointer in the C code, meaning that the input only provides the address to a location in memory where the data can be fetched. This issue is discussed further in \cref{sec:encprob}.
+Notice that the inputs to the instantiated main module, inDataA and inData,B does not propagate to the top module instantiation. Also, if we look inside the main module, shown in \cref{fig:legupoumain}, inDataB is only mapped to the signal \textit{memory\_controller\_address\_a}. This is because inDataB is decleared as a pointer in the C code, meaning that the input only provides the address to a location in memory where the data can be fetched. This issue is discussed further in \cref{sec:encprob}.
 
 \begin{figure}[hbpt]
 \centering
-\includegraphics[width=\textwidth]{../figs/LegUpOutputMain.pdf}
-\caption{\label{fig:legupoumain}Main module output from LegUp HLS}
+\includegraphics[trim=1cm 12cm 1cm 12cm,clip=true, width=\textwidth]{../figs/LegUpOutputMain.pdf}
+%\includegraphics[trim=0.5cm 12cm 0.5cm 10cm, width=\textwidth]{../figs/LegUpOutputMain.pdf}
+\caption{\label{fig:legupoumain}Main module of HLS-generated Verilog from LegUp synthesized in Quartus}
 \end{figure}
 
 \section{\label{sec:encprob}Encountered problems}
