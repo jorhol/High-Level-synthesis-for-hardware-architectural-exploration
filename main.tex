@@ -139,14 +139,14 @@ breakatwhitespace=false,
 \titleITEM
 
 %% Only for the master's thesis; for the project report the description is taken from It's Learning and added by the department
-% \selectlanguage{english} % Change to 'norsk' if you are writing in Norwegian
-% \input{problem_description}
-% \cleardoublepage
+ \selectlanguage{english} % Change to 'norsk' if you are writing in Norwegian
+ \input{problem_description}
+ \cleardoublepage
 
 %% There must be an abstract in English, even though the main text is in Norwegian
 \selectlanguage{english}
-%%\include{abstract_english}
-%%\cleardoublepage
+\include{abstract_english}
+\cleardoublepage
 
 %% Only for the master's thesis; if the main text is in English and you can write Norwegian, there must be an abstract in Norwegian as well.
 % \selectlanguage{norsk}
@@ -155,22 +155,22 @@ breakatwhitespace=false,
 
 \selectlanguage{english}% Change to 'norsk' if you are writing in Norwegian
 
-%%\include{preface}
-%%\cleardoublepage
+\include{preface}
+\cleardoublepage
 
 % similarly you may add a separate acknowledgments page
 
 \tableofcontents*
-\clearpage
-%%\cleardoublepage
+%\clearpage
+\cleardoublepage
 
 %% include if relevant
 \listoffigures
-%%\cleardoublepage
+\cleardoublepage
 
 %% include if relevant
 \listoftables
-%%\cleardoublepage
+\cleardoublepage
 
 %% include if relevant
 %%\listofalgorithms
@@ -222,6 +222,6 @@ breakatwhitespace=false,
  \renewcommand{\chaptername}{\appendixname}
 %% include below possible appendices (chapters)
 
-%\include{chapters/06-appendix}
+\include{chapters/06-appendix}
 
 \end{document} 

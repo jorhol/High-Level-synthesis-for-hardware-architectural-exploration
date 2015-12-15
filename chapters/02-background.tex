@@ -186,7 +186,7 @@ Below a brief description of each module is given. Note that the module and \tex
     \item[Program counter] \hfill \\
     The program counter keeps track of where in the program we are. The counter is reset to 0 at program start and increments when $C_P$ is set. When $E_P$ is set, the value of the counter is output to Wbus. The counter is 4 bit, meaning it can count to from 0 to 15 before starting over again.
     \item[Input and MAR] \hfill \\
-    Input and Memory Address Register (MAR) is used to latch  memory location address, provided by program counter or instruction register, to the RAM module. When $\overline{L}_M$ is set, the content of Wbus is loaded into the register.  
+    Input and Memory Address Register (MAR) is used to latch memory location address, provided by program counter or instruction register, to the RAM module. When $\overline{L}_M$ is set, the content of Wbus is loaded into the register.  
     \item[16x8 RAM] \hfill \\
     The RAM-module can store 16 8-bit words of data or instructions. When $\overline{CE}$ is set, the memory content of the address given by MAR is output to Wbus.
     \item[Instruction register] \hfill \\

@@ -1,6 +1,10 @@
 \chapter{Conclusion}
 \label{chp:conclusion} 
-This report has presented a specification of a framework that can be used for architectural exploration of digital hardware. Due to multiple time-consuming problems encountered along the way, described in detail in \cref{sec:encprob}, no results from comparison between hand-written Verilog and \gls{hls} generated Verilog is presented. Also, the goals of the project, set in the beginning of the working period, might have been slightly exaggerated.The primary objectives of this project, namely to create an initial framework for hardware architectural exploration using \gls{hls}, were not met.
+This report has presented the \gls{hls}-tool, LegUp, and shown how it can be used in a framework for architectural exploration of digital hardware toward \gls{asic} applications. A specification of a framework that can be used to automate the process of architectural exploration have been presented. Unfortunately, multiple problems were encountered along the way. These problems required a lot of time to figure out, and took the focus away from the main objective. The outcome of this, is that no results from comparison between hand-written Verilog and \gls{hls} generated Verilog are presented. The implementations of the designs are however presented, making it a easy task to do the comparison once the encountered problems are sorted out.
+
+In its current state, LegUp cannot be used as tool for architectural exploration of digital hardware in the context of \gls{asic} applications. For this, it has too many elementary deficiencies that are required when designing hardware for a \gls{asic} implementations. 
+
+The following section will present future work for an eventual continuation of the project. First, some fundamental issues that needs attention is described. The issues are followed by two proposed approaches to eliminate the problems and solutions for some of the issues for each approach. Finally, a list of further extensions are included. These extensions are not vital for the use of LegUp in an architectural exploration framework, but they add functionality that any designer would cherish.
 \section{Future work}
 \label{sec:futurework} 
 
