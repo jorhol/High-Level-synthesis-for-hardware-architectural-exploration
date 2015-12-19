@@ -1,4 +1,14 @@
 \pagestyle{empty}
 \begin{abstract}
-\noindent \Blindtext[5][1]
+\noindent
+Architectural exploration of digital hardware is an important step in a design process, to find the best trade-off between performance, area, and power consumption based on minimum requirements. Architectural exploration is tedious process, involving many steps to get good results. 
+
+\noindent
+This thesis presents the high-level synthesis (HLS) tool, LegUp, and evaluates its usefulness in a design process towards implementation in application-specific integrated circuits (ASIC) hardware. High-level synthesis offers the a potential way to reduce the time and effort put into the process of architectural exploration, by creating a framework that automatically generates multiple Register-Transfer Level (RTL) modules based on a set of architectural variations. 
+
+\noindent
+During the work with this thesis, multiple problems were encountered which, in its current state, limits the usefulness of LegUp for ASIC hardware development. The problems can be placed in three categories; input/output, bit-width, and overly complex design. Creating input or output signals in LegUp are not an easy task, as limitations in the compilers and HLS tool forces you to use pointers. Pointers are implemented in a way that requires a dedicated memory controller to handle variables, generating extra overhead and creating the need for a dedicated module for reading and writing to or from the memory controller. This feature is well intended for the focus of the developers to targets design for field-programmable gate arrays (FPGA), but makes things overly complicated for ASIC design. LegUp also lacks the ability to create signals of a given bit-width. This is often necessary when designing modules with control buses or connection to external proprietary devices. Over-sized signals means over-sized modules and functional operations in the internal circuits, leading to additional area and power consumption overhead. The above mentioned memory controller, together with other unused modules generated for FPGA support, makes the output from LegUp overly complex for synthesis towards ASIC implementations.
+
+\noindent
+A large section of future works is included, which describes some potential solutions and approaches to make LegUp more suitable for our original intentions. LegUp has potential to be used in a framework for architectural exploration, but this requires that the mentioned issues are resolved first. At this stage, 
 \end{abstract}
