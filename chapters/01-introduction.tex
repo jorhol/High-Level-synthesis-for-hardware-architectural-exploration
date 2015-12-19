@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{chp:introduction} 
 \section{\label{sec:motivation}Motivation}
-The requirements for power efficiency in hardware design is rapidly increasing as more and more end-user products runs on battery. Long battery life is important for many applications, and this demand forces hardware designers to work harder to find the best trade-of between power, area, and performance. Hardware exploration is used to find the best architectural model of a design. This process is very time-consuming as it involves many steps, for instance a \gls{dsp} application design process can include the following steps:
+The requirements for power efficiency in hardware design is rapidly increasing as more and more end-user products runs on battery. Long battery life is important for many applications, and this demand forces hardware designers to work harder to find the best trade-off between power, area, and performance. Hardware exploration is used to find the best architectural model of a design. This process is very time-consuming as it involves many steps, for instance a \gls{dsp} application design process can include the following steps:
 \begin{compactenum}
     \item Make Matlab simulations 
     \item Decide:
@@ -20,7 +20,9 @@ The requirements for power efficiency in hardware design is rapidly increasing a
     \item Simulate
     \item Extract power consumption
 \end{compactenum}
-\gls{hls} offers a possible way to shorten this design cycle, by taking advantage of the automatic translation of functional description into digital hardware, one can make optimizations to the system and produce multiple architectural options to choose from. For this project the ultimate goal would be to implement a framework that can automate this process by running optimizations over an entire system and create, simulate, and estimate energy consumption from thousands of architectural variations. This way, the design process is simplified into the following flow:
+\gls{hls} offers a possible way to shorten this design cycle, by taking advantage of the automatic translation of functional description into digital hardware, one can make optimizations to the system and produce multiple architectural options to choose from. For this project the ultimate goal would be to implement a framework that can automate this process by running optimizations over an entire system and create, simulate, and estimate energy consumption from thousands of architectural variations. 
+
+This way, the design process is simplified into the following flow:
 \begin{compactenum}
     \item Describe circuit functionality in \gls{hll}
     \item Run framework
